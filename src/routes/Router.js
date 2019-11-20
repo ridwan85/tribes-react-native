@@ -16,7 +16,6 @@ const RouterComponent = () => {
   return (
     <Router navigationBarStyle={{ backgroundColor: 'white' }}>
       <Scene key="root">
-        <Scene key="UserList" component={UserList} hideNavBar={true} />
         <Scene
           key="Login"
           component={Login}
@@ -24,8 +23,8 @@ const RouterComponent = () => {
           tintColor="white"
           hideNavBar={true}
         />
-
         <Scene key="Register" component={Register} hideNavBar={true} />
+        <Scene key="UserList" component={UserList} hideNavBar={true} />
       </Scene>
     </Router>
   )
