@@ -25,21 +25,37 @@ export default class Register extends Component {
   }
 
   onName(text) {
-    this.setState({
-      name: text
-    })
+    let reg = /^[a-zA-Z][a-zA-Z\s]*$/
+    if (reg.test(text) === false) {
+      console.log('not applicable')
+      this.setState({ name: text, name_valid: false })
+    } else {
+      console.log('valid name')
+      this.setState({ name: text, name_valid: true })
+    }
   }
 
   onEmail(text) {
-    this.setState({
-      email: text
-    })
+    //use regex to get email validation
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    if (reg.test(text) === false) {
+      console.log('not email')
+      this.setState({ email: text, email_valid: false })
+    } else {
+      console.log('valid email')
+      this.setState({ email: text, email_valid: true })
+    }
   }
 
   onPass(text) {
-    this.setState({
-      password: text
-    })
+    let reg = /((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+[0-9a-z]+$/i
+    if (reg.test(text) === false) {
+      console.log('not alpha')
+      this.setState({ password: text, pwd_valid: false })
+    } else {
+      this.setState({ password: text, pwd_valid: true })
+      console.log('alphanumeric')
+    }
   }
 
   handleInput = (input_name, e) => {
@@ -89,30 +105,119 @@ export default class Register extends Component {
   }
 
   showRegisterButton() {
-    return (
-      <Button
-        style={[
-          {
-            backgroundColor: 'black',
-            justifyContent: 'center',
-            borderRadius: 5
-          },
-          UtilStyles.buttonStyle
-        ]}
-        onPress={e => this.onRegisterButtonPress()}>
-        <Text
-          style={{
-            color: 'white',
-            fontWeight: 'bold'
-          }}>
-          REGISTER
-        </Text>
-      </Button>
-    )
+    if (
+      this.state.email_valid &&
+      this.state.name_valid &&
+      this.state.pwd_valid
+    ) {
+      return (
+        <Button
+          style={[
+            {
+              backgroundColor: 'black',
+              justifyContent: 'center',
+              borderRadius: 5
+            },
+            UtilStyles.buttonStyle
+          ]}
+          onPress={e => this.onRegisterButtonPress()}>
+          <Text
+            style={{
+              color: 'white',
+              fontWeight: 'bold'
+            }}>
+            REGISTER
+          </Text>
+        </Button>
+      )
+    } else {
+      return (
+        <Button
+          style={[
+            {
+              backgroundColor: 'grey',
+              justifyContent: 'center',
+              borderRadius: 5
+            },
+            UtilStyles.buttonStyle
+          ]}
+          onPress={e => console.log(e)}>
+          <Text
+            style={{
+              color: 'white',
+              fontWeight: 'bold'
+            }}>
+            REGISTER
+          </Text>
+        </Button>
+      )
+    }
+  }
+
+  renderCondition = (item, condition) => {
+    if (item == 'email') {
+      if (this.state.email_valid) {
+        return (
+          <Text style={{ color: 'green' }}>
+            The {item} field is {condition}
+          </Text>
+        )
+      }
+      if (this.state.email_valid == undefined) {
+        return null
+      }
+      if (!this.state.email_valid) {
+        return (
+          <Text style={{ color: 'red' }}>
+            Make sure the {item} field is {condition}
+          </Text>
+        )
+      }
+    }
+
+    if (item == 'name') {
+      if (this.state.name_valid) {
+        return (
+          <Text style={{ color: 'green' }}>
+            The {item} field is {condition}
+          </Text>
+        )
+      }
+      if (this.state.name_valid == undefined) {
+        return null
+      }
+      if (!this.state.name_valid) {
+        return (
+          <Text style={{ color: 'red' }}>
+            Make sure the {item} field is {condition}
+          </Text>
+        )
+      }
+    }
+
+    if (item == 'password') {
+      if (this.state.pwd_valid) {
+        return (
+          <Text style={{ color: 'green' }}>
+            The {item} field is {condition}
+          </Text>
+        )
+      }
+      if (this.state.pwd_valid == undefined) {
+        return null
+      }
+      if (!this.state.pwd_valid) {
+        return (
+          <Text style={{ color: 'red' }}>
+            Make sure the {item} field is {condition}
+          </Text>
+        )
+      }
+    }
   }
 
   render() {
-    console.log('isLoading', this.state.isLoading)
+    console.log(this.state.email_valid)
     return (
       <Container>
         <Header style={{ backgroundColor: 'grey' }}>
@@ -139,6 +244,7 @@ export default class Register extends Component {
                 onChangeText={this.onName.bind(this)}
                 value={this.state.name}
               />
+              {this.renderCondition('name', 'Valid')}
 
               <TextInput
                 style={styles.formInputLine}
@@ -150,6 +256,7 @@ export default class Register extends Component {
                 onChangeText={this.onEmail.bind(this)}
                 value={this.state.email}
               />
+              {this.renderCondition('email', 'Valid')}
 
               <TextInput
                 style={styles.formInputLine}
@@ -160,6 +267,8 @@ export default class Register extends Component {
                 onChangeText={this.onPass.bind(this)}
                 value={this.state.password}
               />
+
+              {this.renderCondition('password', 'Valid')}
 
               {this.state.isLoading ? (
                 <View style={{ margin: 30 }}>
